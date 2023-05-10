@@ -6,10 +6,10 @@ my_ip = "136.243.108.184"
 # Define command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--bs", action='store_true', help="beautiful shell" )
-parser.add_argument("--kick", help="Kick other pts sessions, use -1 to kick all other sessions", type=int, default=-2)
-parser.add_argument("--ts", action='store_true', help="tmux setup", )
-parser.add_argument("--ats", action='store_true', help="Attach to latest tmux session", )
-parser.add_argument("--ic", help="Install crontab", type=str , default=-1)
+parser.add_argument("--kick", help="Kick other pts sessions, use -1 to kick all other sessions, specify the number you want to kick example pts/2 execute --kick 2", type=int, default=-2)
+parser.add_argument("--ts", action='store_true', help="tmux setup, make every login start a tmux session by default", )
+parser.add_argument("--ats", action='store_true', help="Attach to latest tmux session, watch other people :D", )
+parser.add_argument("--ic", help="Install crontab, to automatically connect to your ip, IP hardcoded in script, port needs to be specified", type=str , default=-1)
 
 # Parse command-line arguments
 args = parser.parse_args()
