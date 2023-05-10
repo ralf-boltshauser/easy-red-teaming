@@ -41,6 +41,8 @@ if args.kick != -2:
         press("Return")
         write("rm active_sessions")
         press("Return")
+        write("tmux kill-server")
+        press("Return")
         write("history -c")
         press("Return")
     elif args.kick > -1:
