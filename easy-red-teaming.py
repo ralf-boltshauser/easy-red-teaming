@@ -1,4 +1,5 @@
 import argparse
+import sys
 import subprocess
 from time import sleep
 import pyautogui
@@ -89,4 +90,5 @@ if args.ic != -1:
     write("history -c")
     press("Return")
 
-parser.print_help()
+if len(sys.argv)==1:
+    parser.print_help()
