@@ -35,7 +35,7 @@ if args.kick != -2:
         press("Return")
         write("ps -efH | grep $$ | grep bash | grep -v grep | awk '{print($6)}' > my_session")
         press("Return")
-        write("grep -v -x -f my_session active_sessions | awk '{system(\"ps -efH | grep \" $1)}' | awk '{system(\"kill \" $2)}'")
+        write("grep -v -x -f my_session active_sessions | awk '{system(\"ps -efH | grep \" $1)}' | grep -v grep | awk '{system(\"kill \" $2)}'")
         press("Return")
         write("rm my_session")
         press("Return")
@@ -50,6 +50,7 @@ if args.ts:
    #!/bin/bash
     write("sudo apt install tmux -y")
     press("Return")
+    sleep(10)
     write("echo 'isTmux=0' >> .profile")
     press("Return")
     write("echo 'iKnow=0' >> .profile")
