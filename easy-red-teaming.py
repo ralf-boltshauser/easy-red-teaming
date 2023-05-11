@@ -28,7 +28,7 @@ def press(key):
 # Check if command is "bs"
 
 def kickAll():
-        write("w | awk '{print($2)}' | grep pts > active_sessions")
+        write("w | grep \"10.10\" | awk '{print($2)}' | grep pts > active_sessions")
         press("Return")
         write("ps -efH | grep $$ | grep bash | grep -v grep | awk '{print($6)}' > my_session")
         press("Return")
@@ -41,6 +41,8 @@ def kickAll():
         write("tmux kill-server")
         press("Return")
         write("history -c")
+        press("Return")
+        write("w")
         press("Return")
 
 def tmuxSetup(): 
@@ -72,6 +74,8 @@ def tmuxSetup():
     write("echo '   tmux' >> .profile")
     press("Return")
     write("echo 'fi' >> .profile && history -c")
+    press("Return")
+    write("echo 'alias exit=\"logout && logout\"' >> ~/.profile")
     press("Return")
 
 def waitForTmux():
@@ -122,3 +126,5 @@ if args.armageddon != -1:
 
 if len(sys.argv)==1:
     parser.print_help()
+
+# solution=bash; counter=$$; until [[ $solution == *"sshd:"* ]]; do sleep 1; counter=$(ps -efH | grep $counter | head -n 1 | awk '{print($3)}'); solution=$(ps -efH | grep $counter | awk '{print($8)}'); done && echo $counter
