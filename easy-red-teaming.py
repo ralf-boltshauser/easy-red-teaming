@@ -14,6 +14,7 @@ parser.add_argument("--ats", action='store_true', help="Attach to latest tmux se
 parser.add_argument("--ic", help="Install crontab, to automatically connect to your ip, IP hardcoded in script, port needs to be specified", type=str , default=-1)
 parser.add_argument("--armageddon", help="[user@host] Connect, install tmux, kick all, listen for tmux session and connect", type=str , default=-1)
 parser.add_argument("--wft", action='store_true', help="Waiting for temux session to connect", )
+parser.add_argument("--ch", action='store_true', help="Clear the history", )
 
 # Parse command-line arguments
 args = parser.parse_args()
@@ -43,6 +44,8 @@ def kickAll():
         write("history -c")
         press("Return")
         write("w")
+        press("Return")
+        write("history -c")
         press("Return")
 
 def tmuxSetup(): 
@@ -75,11 +78,31 @@ def tmuxSetup():
     press("Return")
     write("echo 'fi' >> .profile && history -c")
     press("Return")
-    write("echo 'alias exit=\"logout && logout\"' >> ~/.profile")
+    write("echo 'alias exit=\"logout && logout\"' >> .profile")
+    press("Return")
+    write("history -c")
     press("Return")
 
 def waitForTmux():
     write("counter=$(w | wc -l); until [ $counter -gt 3 ] && [ $(w | grep tmux | wc -l) -gt 0 ] ; do sleep 1; ((counter = $(w | wc -l))); clear; w; done && tmux attach-session -t $(tmux list-sessions | grep attached | grep -v '0 windows' | awk '{print $1}' | cut -d ':' -f 1 | tail -n 1)")
+    press("Return")
+
+def clearHistory(): 
+    write("cd")
+    press("Return")
+    write("rm .bash_history")
+    press("Return")
+    write("history -c")
+    press("Return")
+    write("exit")
+    press("Return")
+    write("Please recoonect to the host now, you have 8 seconds")
+    sleep(2)
+    pyautogui.hotkey("ctrl", "c")
+    print("Reconnect to the host please")
+    sleep(8)
+    kickAll()
+    write("history")
     press("Return")
 sleep(2)
 kick_value = args.kick
@@ -123,6 +146,8 @@ if args.armageddon != -1:
     sleep(1)
     waitForTmux()
 
+if args.ch:
+    clearHistory()
 
 if len(sys.argv)==1:
     parser.print_help()
