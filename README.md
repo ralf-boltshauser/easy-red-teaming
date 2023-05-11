@@ -10,5 +10,6 @@ sudo bash setup.sh
 
 ## Todos
 
-- [ ] exit closes ssh and not exit from tmux
+- [x] exit closes ssh and not exit from tmux
 - [ ] --wft does not do the same as --armogeddon
+- [ ]
